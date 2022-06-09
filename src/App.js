@@ -1,23 +1,33 @@
-import logo from './logo.svg';
+import { useState, useEffect } from "react";
 import './App.css';
+import AllUsers from "./components/AllUsers";
+import axios from 'axios';
 
 function App() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  const fetchUsers = () => {
+    axios
+      .get('https://jsonplaceholder.typicode.com/users')
+      .then((response) => {
+        console.log(response);
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Users Card</h1>
+      <div className="item-container">
+        {users.map((user, index) => (
+          <AllUsers userData={user} key={user.id}></AllUsers>
+        ))}
+      </div>
     </div>
   );
 }
